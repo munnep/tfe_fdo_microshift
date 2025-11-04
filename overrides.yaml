@@ -1,0 +1,72 @@
+replicaCount: ${replica_count}
+image:
+  repository: ${registry_images_url}
+  name: hashicorp/terraform-enterprise
+  tag: ${tfe_release}
+
+resources:
+  requests:
+    memory: "2000Mi"
+    cpu: "2"
+  limits:
+    memory: "6000Mi"
+    cpu: "4"
+
+service:
+  annotations:
+  type: ClusterIP
+
+
+agentWorkerPodTemplate:
+  metadata:
+    labels:
+      app: tfe-agent
+      version: default
+  spec:
+    containers:
+    - securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      # Use the full Docker Hub path for minikube compatibility
+      image: docker.io/hashicorp/tfc-agent:latest
+
+env:
+  variables:
+    TFE_CAPACITY_CONCURRENCY: 10
+    TFE_CAPACITY_MEMORY: 4096
+    TFE_CAPACITY_CPU: 2
+    TFE_HOSTNAME: ${fqdn}
+    TFE_OPERATIONAL_MODE: active-active
+    TFE_DATABASE_HOST: ${pg_address}
+    TFE_DATABASE_NAME: ${pg_dbname}
+    TFE_DATABASE_USER: ${pg_user}
+    TFE_DATABASE_PARAMETERS: sslmode=disable
+    TFE_OBJECT_STORAGE_TYPE: s3
+    TFE_OBJECT_STORAGE_S3_BUCKET: ${s3_bucket}
+    TFE_OBJECT_STORAGE_S3_REGION: "justavalue"
+    TFE_OBJECT_STORAGE_S3_ACCESS_KEY_ID: ${s3_bucket_key}
+    TFE_OBJECT_STORAGE_S3_SECRET_ACCESS_KEY: ${s3_bucket_secret}
+    TFE_OBJECT_STORAGE_S3_ENDPOINT: ${s3_endpoint}
+    TFE_OBJECT_STORAGE_S3_USE_INSTANCE_PROFILE: false
+    TFE_ATLAS_REGISTRY_MONOREPO_TOGGLE_ENABLED: 1
+
+    
+    TFE_REDIS_HOST: ${redis_host}:${redis_port}
+    TFE_IACT_SUBNETS: "0.0.0.0/0"
+
+  secrets:
+    TFE_DATABASE_PASSWORD: ${pg_password}
+    TFE_ENCRYPTION_PASSWORD:  ${enc_password}
+    TFE_LICENSE: ${tfe_license} 
+
+tls:
+  certData: ${cert_data}
+  keyData: ${key_data}
+  caCertData: ${ca_cert_data}
+
+
+  

@@ -1,0 +1,33 @@
+# General
+route53_zone        = "munnep.com"                          # Main domain for Route53
+route53_subdomain   = "tfe1"                           # Subdomain for TFE
+cert_email          = "patrick.munne@ibm.com"                 # Email for certificate generation
+kubectl_config_path = "/Users/patrick/.kube/config" # Full path to kubeconfig file
+
+# Cloudflare
+cloudflare_account_id = "xxxxxx"  # Cloudflare account ID
+cloudflare_api_token  = "xxxxxx" # API token for Cloudflare
+
+# Minio
+minio_user       = "minioadmin"                                       # Minio root user
+minio_password   = "minioadmin123456"                                 # Minio root password
+minio_access_key = "app-user-access"                                  # Minio access key
+minio_secret_key = "app-user-secret-override"                         # Minio secret key
+image_minio      = "quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z" # Minio Docker image (full path)
+
+# Postgres
+postgres_user     = "postgres"                      # Postgres username
+postgres_password = "postgresql"                    # Postgres password
+postgres_db       = "postgres"                      # Postgres database name
+image_postgres    = "docker.io/library/postgres:16" # Postgres Docker image (full path)
+
+# Redis
+image_redis = "docker.io/library/redis:7"           # Redis Docker image (full path)
+
+# TFE
+admin_username          = "admin"                      # Username for TFE admin user
+admin_email             = "patrick.munne@ibm.com"      # Email for TFE admin user
+admin_password          = "secret$321"                 # Password for TFE admin user
+tfe_encryption_password = "secret$321"                 # Encryption password for TFE
+release_sequence        = "1.0.2"                      # TFE release sequence
+tfe_raw_license         = "xxxxxxxx"                   # License string for TFE
