@@ -77,7 +77,7 @@ resource "kubernetes_pod" "cloudflared" {
         type = "RuntimeDefault"
       }
     }
-    
+
     container {
       name  = "cloudflared"
       image = "docker.io/cloudflare/cloudflared:latest"
@@ -128,18 +128,18 @@ resource "kubernetes_pod" "cloudflared" {
     }
   }
 
-      lifecycle {
-    ignore_changes = [ spec[0].security_context, metadata[0].annotations ]
+  lifecycle {
+    ignore_changes = [spec[0].security_context, metadata[0].annotations]
   }
 }
 
 output "cloudflare_login_command" {
-  value = "cloudflared login"  
+  value = "cloudflared login"
 }
 
 output "cloudflare_list_tunnels_command" {
   value = "cloudflared tunnel list"
-  
+
 }
 
 output "cloudflare_delete_tunnel_command" {

@@ -21,7 +21,7 @@ resource "kubernetes_pod" "minio" {
       app     = "minio"
       storage = "ephemeral"
     }
-        annotations = {
+    annotations = {
       "openshift.io/scc" = "nonroot-v2"
     }
   }
@@ -34,7 +34,7 @@ resource "kubernetes_pod" "minio" {
         type = "RuntimeDefault"
       }
     }
-    
+
     container {
       name  = "minio"
       image = var.image_minio
@@ -103,7 +103,7 @@ resource "kubernetes_pod" "minio" {
     container {
       name  = "minio-init"
       image = "quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z"
-      
+
       security_context {
         allow_privilege_escalation = false
         capabilities {
@@ -214,8 +214,8 @@ resource "kubernetes_pod" "minio" {
   }
 
 
-    lifecycle {
-    ignore_changes = [ spec[0].security_context ]
+  lifecycle {
+    ignore_changes = [spec[0].security_context]
   }
 }
 
@@ -253,13 +253,13 @@ resource "kubernetes_service" "minio" {
 # }
 
 output "minio_console_url" {
-  value = "http://localhost:${kubernetes_service.minio.spec[0].port[1].port}/"  
+  value = "http://localhost:${kubernetes_service.minio.spec[0].port[1].port}/"
 }
 
 output "minio_user" {
-  value = var.minio_user  
+  value = var.minio_user
 }
 
 output "minio_password" {
-  value = var.minio_password  
+  value = var.minio_password
 }

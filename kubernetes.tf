@@ -4,6 +4,6 @@ resource "kubernetes_namespace" "terraform_enterprise" {
     name = var.namespace
   }
   lifecycle {
-    ignore_changes = [ metadata[0].annotations ]
+    ignore_changes = [metadata[0].annotations]
   }
 }

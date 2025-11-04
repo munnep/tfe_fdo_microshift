@@ -17,7 +17,7 @@ resource "kubernetes_pod" "postgres" {
     name      = "${var.tag_prefix}-postgres"
     namespace = var.namespace
     labels    = { app = "postgres" }
-        annotations = {
+    annotations = {
       "openshift.io/scc" = "nonroot-v2"
     }
   }
@@ -31,7 +31,7 @@ resource "kubernetes_pod" "postgres" {
         type = "RuntimeDefault"
       }
     }
-    
+
     container {
       name  = "postgres"
       image = var.image_postgres
@@ -110,8 +110,8 @@ resource "kubernetes_pod" "postgres" {
     restart_policy = "Always"
   }
 
-    lifecycle {
-    ignore_changes = [ spec[0].security_context ]
+  lifecycle {
+    ignore_changes = [spec[0].security_context]
   }
 }
 
@@ -142,5 +142,5 @@ resource "kubernetes_service" "postgres" {
 # }
 
 output "postgres_url" {
-  value = "postgresql://${var.postgres_user}:${var.postgres_password}@localhost:${kubernetes_service.postgres.spec[0].port[0].port}/${var.postgres_db}"  
+  value = "postgresql://${var.postgres_user}:${var.postgres_password}@localhost:${kubernetes_service.postgres.spec[0].port[0].port}/${var.postgres_db}"
 }

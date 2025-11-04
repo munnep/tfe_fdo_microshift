@@ -57,5 +57,5 @@ output "tfe_execute_script_to_create_user_admin" {
 }
 
 output "tfe_url" {
-  value = "https://${local.fqdn}"  
+  value = "https://${local.fqdn}"
 }

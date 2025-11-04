@@ -3,7 +3,7 @@ resource "kubernetes_pod" "redis" {
     name      = "${var.tag_prefix}-redis"
     namespace = var.namespace
     labels    = { app = "redis" }
-        annotations = {
+    annotations = {
       "openshift.io/scc" = "nonroot-v2"
     }
   }
@@ -16,7 +16,7 @@ resource "kubernetes_pod" "redis" {
         type = "RuntimeDefault"
       }
     }
-    
+
     container {
       name  = "redis"
       image = var.image_redis
@@ -61,8 +61,8 @@ resource "kubernetes_pod" "redis" {
     }
   }
 
-    lifecycle {
-    ignore_changes = [ spec[0].security_context ]
+  lifecycle {
+    ignore_changes = [spec[0].security_context]
   }
 }
 
