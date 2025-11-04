@@ -47,17 +47,17 @@ MicroShift: A trimmed-down, optimized variant of OpenShift that reuses its core 
 To enable this in Podman: https://podman-desktop.io/docs/openshift/microshift
 
 Enable the MINC extension  
-![](media/2025-11-03-13-29-58.png)  
+![](media/2025-11-04-11-08-55.png)  
 
 
 ## View in Podman Desktop
 Under the Containers section you can now see your created container
-![](media/2025-11-04-10-46-13.png)   
+![](media/2025-11-04-11-08-16.png)  
 This is also the place to stop and start the environment
 
 Also in the section Kubenetes -> Nodes:  
 
-![](media/2025-11-04-10-46-59.png)   
+![](media/2025-11-04-11-08-34.png)  
 
 ## Terraform Enterprise Agent
 Terraform Enterprise on OpenShift requires a specific OpenShift agent as described [here](https://developer.hashicorp.com/terraform/enterprise/deploy/openshift#create-a-custom-hcp-terraform-agent)
