@@ -1,8 +1,8 @@
 # Introduction
 
 This repository will create a Terraform Enterprise environment locally. 
-It is tested on MacOS with Minikube as kubernetes environment.  
-Minikube is run on Podman Desktop.  
+It is tested on MacOS with MicroShift as an OpenShift environment.  
+OpenShift is run on Podman Desktop.  
 Cloudflare is used for DNS record and TFE certificate creation.  
 You must have a cloudflare api token configured with DNS and Tunnel permissions.  
 
@@ -10,7 +10,7 @@ You must have a cloudflare api token configured with DNS and Tunnel permissions.
 ## Git
 Clone this repository
 
-## terraform.tfvars
+## variables.auto.tfvars
 Copy the example file `variables.example` to `variables.auto.tfvars`. 
 
 # Podman Desktop
@@ -24,7 +24,7 @@ Once installed, start the app and setup a podman machine with 6cpu, 12GB mem and
 
 Example:
 ```
-podman machine init --cpus 8 --memory 12000 --disk-size 100
+podman machine init --cpus 8 --memory 12000 --disk-size 100 --rootful
 ```
 
 Alter it if needed
@@ -34,41 +34,37 @@ podman machine set --cpus 6 --memory 8192 --disk-size 150
 ```
 
 
-# Minikube
-https://minikube.sigs.k8s.io/docs/drivers/podman/  
+# Microshift
+MicroShift is a lightweight, containerized version of OpenShift designed for edge computing and resource-constrained environments.
 
-Install with brew:  
-```
-brew install minikube
-```
+Here’s the comparison in short:
 
-Set the driver to podman:  
-```
-minikube config set driver podman
-```
+OpenShift: A full-featured enterprise Kubernetes platform for large-scale, centralized deployments—complete with developer tools, CI/CD pipelines, and full cluster management.
 
-Start minikube with additional parameters:  
-```
-minikube start -p tfe --driver=podman --container-runtime=cri-o --kubernetes-version=v1.34.0 --cpus=4 --memory=8192
-```
+MicroShift: A trimmed-down, optimized variant of OpenShift that reuses its core components (like the API server, scheduler, and CRI-O) but runs with minimal resource overhead, suitable for edge devices, IoT gateways, or single-node setups.
 
-This will put the config in kubectl automatically so the kubernetes provider can use it.  
-Add the full path of the config file to the variable `kubectl_config_path` in `variables.auto.tfvars`
 
-If you want to access Minio and Postgres (locally) you will need to start a Minikube tunnel.  
-This can be done with the following command:  
-```
-sudo minikube tunnel --profile=tfe
-```  
-The name you enter at `--profile` must match the name you used in the start command with `-p`, here `tfe`.
-The tunnel will automatically detect all services defined as type Loadbalancer and expose them on localhost.
+To enable this in Podman: https://podman-desktop.io/docs/openshift/microshift
+
+Enable the MINC extension  
+![](media/2025-11-03-13-29-58.png)  
+
 
 ## View in Podman Desktop
-Under the Containers section you can now see your created container, named `tfe`.
-![](media/2025-10-27-14-18-58.png)  
+Under the Containers section you can now see your created container
+![](media/2025-11-04-10-46-13.png)   
+This is also the place to stop and start the environment
 
 Also in the section Kubenetes -> Nodes:  
-![](media/2025-10-27-14-19-56.png)  
+
+![](media/2025-11-04-10-46-59.png)   
+
+## Terraform Enterprise Agent
+Terraform Enterprise on OpenShift requires a specific OpenShift agent as described [here](https://developer.hashicorp.com/terraform/enterprise/deploy/openshift#create-a-custom-hcp-terraform-agent)
+
+If this environment is started on a Mac with ARM architecture it also requires a ARM build of the agent. The easiest is to use the following on docker hub [here](https://hub.docker.com/r/patrickmunne3/custom-agent-openshift)
+
+
 
 # Cloudflare
 Cloudflare is used for DNS a record and a tunnel, to be able to reach TFE from externally.  
@@ -115,14 +111,12 @@ Outputs:
    cloudflare_delete_tunnel_command = "cloudflared tunnel delete tfe-tunnel"
    cloudflare_list_tunnels_command = "cloudflared tunnel list"
    cloudflare_login_command = "cloudflared login"
-   minikube_delete_cluster = "minikube delete --profile=tfe"
-   minikube_tunnel = "sudo minikube tunnel --profile=tfe"
    minio_console_url = "http://localhost:9001/"
    minio_password = "minioadmin123456"
    minio_user = "minioadmin"
    postgres_url = "postgresql://postgres:postgresql@localhost:5432/postgres"
-   tfe_execute_script_to_create_user_admin = "./scripts/configure_tfe.sh tfe1.munnep.com patrick.munne@ibm.com admin secret$321"
-   tfe_url = "https://tfe1.munnep.com"
+   tfe_execute_script_to_create_user_admin = "./scripts/configure_tfe.sh tfe2.munnep.com patrick.munne@ibm.com admin secret$321"
+   tfe_url = "https://tfe2.munnep.com"
 ```
 
 Once the apply is complete, run the config script to create an admin user and test organization in TFE.  
@@ -132,6 +126,3 @@ Note:
 `terraform destroy` will not destroy the cloudflare tunnel.  
 You will need to delete this manually with the command shown after the apply.  
 Default is `cloudflared tunnel delete tfe-tunnel`.  
-
-Also the minikube cluster must be deleted manually.  
-`minikube delete -p tfe`  
