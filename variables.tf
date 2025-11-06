@@ -26,6 +26,13 @@ variable "kubectl_context" {
   default     = "microshift"
 }
 
+variable "tfe_agent_image" {
+  description = "Docker image for the TFE agent ."
+  type        = string
+  default     = "patrickmunne3/custom-agent-openshift:v1.4"
+}
+
+
 variable "namespace" {
   description = "Kubernetes namespace to deploy resources into."
   type        = string

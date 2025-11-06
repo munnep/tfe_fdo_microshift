@@ -25,9 +25,10 @@ image_postgres    = "docker.io/library/postgres:16" # Postgres Docker image (ful
 image_redis = "docker.io/library/redis:7"           # Redis Docker image (full path)
 
 # TFE
-admin_username          = "admin"                      # Username for TFE admin user
-admin_email             = "patrick.munne@ibm.com"      # Email for TFE admin user
-admin_password          = "secret$321"                 # Password for TFE admin user
-tfe_encryption_password = "secret$321"                 # Encryption password for TFE
-release_sequence        = "1.0.2"                      # TFE release sequence
-tfe_raw_license         = "xxxxxxxx"                   # License string for TFE
+admin_username          = "admin"                                       # Username for TFE admin user
+admin_email             = "patrick.munne@ibm.com"                       # Email for TFE admin user
+admin_password          = "secret$321"                                  # Password for TFE admin user
+tfe_encryption_password = "secret$321"                                  # Encryption password for TFE
+release_sequence        = "1.0.2"                                       # TFE release sequence
+tfe_agent_image         = "patrickmunne3/custom-agent-openshift:v1.4"   # TFE agent Docker image (full path)
+tfe_raw_license         = "xxxxxxxx"                                    # License string for TFE

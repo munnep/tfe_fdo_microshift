@@ -71,6 +71,10 @@ To enable this in Podman: https://podman-desktop.io/docs/openshift/microshift
 Enable the MINC extension  
 ![](media/2025-11-04-11-08-55.png)  
 
+Go to Settings and then Resources and create a Microshift Minc cluster:
+![](media/2025-11-05-10-54-31.png)
+Leave the default ports and click create.
+
 
 ## View in Podman Desktop
 Under the Containers section you can now see your created container

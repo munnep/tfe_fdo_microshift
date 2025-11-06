@@ -61,11 +61,12 @@ with Diagram(
     # Relationships
     external_user >> Edge(label="HTTPS requests") >> cloudflare_public
     cloudflare_public >> Edge(label="Cloudflare tunnel") >> cloudflared_pod
+    cloudflared_pod >> Edge(label="forwards to") >> tfe_pod
     mac_host >> Edge(label="starts / manages") >> vm_backend
     vm_backend >> Edge(label="hosts") >> linux_vm
     linux_vm >> Edge(label="runs") >> podman_runtime
     podman_runtime >> Edge(label="hosts") >> microshift
-    microshift >> Edge(label="schedules / runs") >> [cloudflared_pod, tfe_pod, postgres_pod, minio_pod, redis_pod]
+    microshift >> [cloudflared_pod, tfe_pod, postgres_pod, minio_pod, redis_pod]
     
     # Internal pod relationships
     tfe_pod >> Edge(label="connects to") >> postgres_pod

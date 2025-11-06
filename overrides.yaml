@@ -38,7 +38,7 @@ env:
     TFE_OBJECT_STORAGE_S3_ENDPOINT: ${s3_endpoint}
     TFE_OBJECT_STORAGE_S3_USE_INSTANCE_PROFILE: false
     TFE_ATLAS_REGISTRY_MONOREPO_TOGGLE_ENABLED: 1
-    TFE_RUN_PIPELINE_IMAGE: "patrickmunne3/custom-agent-openshift:v1.4"
+    TFE_RUN_PIPELINE_IMAGE: ${tfe_agent_image}
 
 
     
