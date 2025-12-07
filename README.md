@@ -152,3 +152,21 @@ Note:
 `terraform destroy` will not destroy the cloudflare tunnel.  
 You will need to delete this manually with the command shown after the apply.  
 Default is `cloudflared tunnel delete tfe-tunnel`.  
+
+# useful commands
+
+- set/override the number of replicas
+```
+oc scale deployment terraform-enterprise --replicas=N -n tfe
+```
+
+- delete helm deployment
+```
+helm ls -a --all-namespaces | awk 'NR > 1 { print  "-n "$2, $1}' | xargs -L1 helm delete
+```
+
+- events of agents
+```
+oc get events -n terraform-enterprise-agents --sort-by=.lastTimestamp
+```
+
