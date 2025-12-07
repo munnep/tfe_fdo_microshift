@@ -96,6 +96,10 @@ resource "kubernetes_pod" "cloudflared" {
 
       args = [
         "tunnel",
+        "--edge-ip-version",
+        "4",
+        "--protocol",
+        "http2",
         "--config",
         "/etc/cloudflared/config.yaml",
         "run",
@@ -146,3 +150,4 @@ output "cloudflare_delete_tunnel_command" {
   #value = "cloudflared tunnel delete ${cloudflare_zero_trust_tunnel_cloudflared.tfe_tunnel.id}"
   value = "cloudflared tunnel delete ${cloudflare_zero_trust_tunnel_cloudflared.tfe_tunnel.name}"
 }
+

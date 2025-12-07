@@ -111,8 +111,12 @@ resource "kubernetes_pod" "postgres" {
   }
 
   lifecycle {
-    ignore_changes = [spec[0].security_context]
+    ignore_changes = [
+      spec[0].security_context,
+      metadata[0].annotations["security.openshift.io/validated-scc-subject-type"],
+    ]
   }
+
 }
 
 resource "kubernetes_service" "postgres" {

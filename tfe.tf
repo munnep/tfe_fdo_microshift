@@ -24,7 +24,7 @@ resource "helm_release" "tfe" {
   namespace       = var.namespace
   version         = "1.6.5"
   cleanup_on_fail = true
-
+  timeout         = var.helm_timeout
 
   values = [
     templatefile("${path.module}/overrides.tpl", {

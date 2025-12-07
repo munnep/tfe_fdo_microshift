@@ -151,3 +151,9 @@ variable "replica_count" {
   default     = 1
 }
 
+variable "helm_timeout" {
+  description = "timeout for helm"
+  type        = number
+  default     = 600
+}
+
