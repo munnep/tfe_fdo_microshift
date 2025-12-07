@@ -52,7 +52,7 @@ resource "kubernetes_config_map" "tunnel_config" {
     "config.yaml" = templatefile("${path.module}/scripts/cloudflare_tunnel_config.tpl", {
       tunnel_id = cloudflare_zero_trust_tunnel_cloudflared.tfe_tunnel.id
       fqdn      = local.fqdn
-      namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+      namespace = kubernetes_namespace.terraform_enterprise[var.namespace].metadata.0.name
     })
   }
 }
@@ -135,6 +135,9 @@ resource "kubernetes_pod" "cloudflared" {
 
   lifecycle {
     ignore_changes = [spec[0].security_context, metadata[0].annotations]
+    replace_triggered_by = [
+      kubernetes_config_map.tunnel_config
+    ]
   }
 }
 

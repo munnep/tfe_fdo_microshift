@@ -29,9 +29,8 @@ variable "kubectl_context" {
 variable "tfe_agent_image" {
   description = "Docker image for the TFE agent ."
   type        = string
-  default     = "patrickmunne3/custom-agent-openshift:v1.4"
+  default     = "docker.io/patrickmunne3/custom-agent-openshift:v1.4"
 }
-
 
 variable "namespace" {
   description = "Kubernetes namespace to deploy resources into."
