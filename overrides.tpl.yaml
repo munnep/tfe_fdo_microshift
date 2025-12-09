@@ -22,8 +22,8 @@ openshift:
 env:
   variables:
     TFE_CAPACITY_CONCURRENCY: 10
-    TFE_CAPACITY_MEMORY: 2048
-    TFE_CAPACITY_CPU: 2
+   # TFE_CAPACITY_MEMORY: 2048
+    #TFE_CAPACITY_CPU: 2
     TFE_HOSTNAME: ${fqdn}
     TFE_OPERATIONAL_MODE: active-active
     TFE_DATABASE_HOST: ${pg_address}

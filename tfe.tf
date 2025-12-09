@@ -27,7 +27,7 @@ resource "helm_release" "tfe" {
   timeout         = var.helm_timeout
 
   values = [
-    templatefile("${path.module}/overrides.yaml", {
+    templatefile("${path.module}/overrides.tpl.yaml", {
       tag_prefix          = var.tag_prefix
       replica_count       = var.replica_count
       enc_password        = var.tfe_encryption_password
