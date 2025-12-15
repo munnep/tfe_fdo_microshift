@@ -49,7 +49,7 @@ resource "kubernetes_config_map_v1" "tunnel_config" {
   }
 
   data = {
-    "config.yaml" = templatefile("${path.module}/scripts/cloudflare_tunnel_config.tpl", {
+    "config.yaml" = templatefile("${path.module}/scripts/cloudflare_tunnel_config.tpl.yaml", {
       tunnel_id = cloudflare_zero_trust_tunnel_cloudflared.tfe_tunnel.id
       fqdn      = local.fqdn
       namespace = kubernetes_namespace_v1.terraform_enterprise[var.namespace].metadata.0.name
