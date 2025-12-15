@@ -30,10 +30,10 @@ resource "cloudflare_dns_record" "tunnel_dns" {
 
 # Kubernetes deployment for cloudflared tunnel
 # Secret containing tunnel information
-resource "kubernetes_secret" "tunnel_credentials" {
+resource "kubernetes_secret_v1" "tunnel_credentials" {
   metadata {
     name      = "tunnel-credentials"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
   }
 
   data = {
@@ -42,26 +42,26 @@ resource "kubernetes_secret" "tunnel_credentials" {
 }
 
 # ConfigMap containing the tunnel configuration
-resource "kubernetes_config_map" "tunnel_config" {
+resource "kubernetes_config_map_v1" "tunnel_config" {
   metadata {
     name      = "tunnel-config"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
   }
 
   data = {
     "config.yaml" = templatefile("${path.module}/scripts/cloudflare_tunnel_config.tpl", {
       tunnel_id = cloudflare_zero_trust_tunnel_cloudflared.tfe_tunnel.id
       fqdn      = local.fqdn
-      namespace = kubernetes_namespace.terraform_enterprise[var.namespace].metadata.0.name
+      namespace = kubernetes_namespace_v1.terraform_enterprise[var.namespace].metadata.0.name
     })
   }
 }
 
 # Pod for cloudflared
-resource "kubernetes_pod" "cloudflared" {
+resource "kubernetes_pod_v1" "cloudflared" {
   metadata {
     name      = "cloudflared"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
     labels = {
       app = "cloudflared"
     }
@@ -112,7 +112,7 @@ resource "kubernetes_pod" "cloudflared" {
         name = "TUNNEL_TOKEN"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.tunnel_credentials.metadata[0].name
+            name = kubernetes_secret_v1.tunnel_credentials.metadata[0].name
             key  = "tunnel-token"
           }
         }
@@ -128,7 +128,7 @@ resource "kubernetes_pod" "cloudflared" {
     volume {
       name = "config"
       config_map {
-        name = kubernetes_config_map.tunnel_config.metadata[0].name
+        name = kubernetes_config_map_v1.tunnel_config.metadata[0].name
       }
     }
   }
@@ -136,7 +136,7 @@ resource "kubernetes_pod" "cloudflared" {
   lifecycle {
     ignore_changes = [spec[0].security_context, metadata[0].annotations]
     replace_triggered_by = [
-      kubernetes_config_map.tunnel_config
+      kubernetes_config_map_v1.tunnel_config
     ]
   }
 }

@@ -1,5 +1,5 @@
 # Create a namespace
-resource "kubernetes_namespace" "terraform_enterprise" {
+resource "kubernetes_namespace_v1" "terraform_enterprise" {
 
   for_each = toset([var.namespace, var.dep_namespace])
 

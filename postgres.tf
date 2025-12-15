@@ -1,8 +1,8 @@
 
-resource "kubernetes_secret" "postgres" {
+resource "kubernetes_secret_v1" "postgres" {
   metadata {
     name      = "${var.tag_prefix}-postgres-secret"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
   }
   data = {
     POSTGRES_USER     = var.postgres_user
@@ -12,10 +12,10 @@ resource "kubernetes_secret" "postgres" {
   type = "Opaque"
 }
 
-resource "kubernetes_pod" "postgres" {
+resource "kubernetes_pod_v1" "postgres" {
   metadata {
     name      = "${var.tag_prefix}-postgres"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
     labels    = { app = "postgres" }
     annotations = {
       "openshift.io/scc" = "nonroot-v2"
@@ -55,7 +55,7 @@ resource "kubernetes_pod" "postgres" {
         name = "POSTGRES_USER"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.postgres.metadata[0].name
+            name = kubernetes_secret_v1.postgres.metadata[0].name
             key  = "POSTGRES_USER"
           }
         }
@@ -64,7 +64,7 @@ resource "kubernetes_pod" "postgres" {
         name = "POSTGRES_PASSWORD"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.postgres.metadata[0].name
+            name = kubernetes_secret_v1.postgres.metadata[0].name
             key  = "POSTGRES_PASSWORD"
           }
         }
@@ -73,7 +73,7 @@ resource "kubernetes_pod" "postgres" {
         name = "POSTGRES_DB"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.postgres.metadata[0].name
+            name = kubernetes_secret_v1.postgres.metadata[0].name
             key  = "POSTGRES_DB"
           }
         }
@@ -119,10 +119,10 @@ resource "kubernetes_pod" "postgres" {
 
 }
 
-resource "kubernetes_service" "postgres" {
+resource "kubernetes_service_v1" "postgres" {
   metadata {
     name      = "${var.tag_prefix}-postgres"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
     labels    = { app = "postgres" }
   }
   spec {
@@ -138,13 +138,13 @@ resource "kubernetes_service" "postgres" {
 }
 
 # output "postgres_service_name" {
-#   value = kubernetes_service.postgres.metadata[0].name
+#   value = kubernetes_service_v1.postgres.metadata[0].name
 # }
 
 # output "postgres_endpoint" {
-#   value = "${kubernetes_service.postgres.metadata[0].name}.${var.dep_namespace}.svc.cluster.local:${kubernetes_service.postgres.spec[0].port[0].port}"
+#   value = "${kubernetes_service_v1.postgres.metadata[0].name}.${var.dep_namespace}.svc.cluster.local:${kubernetes_service_v1.postgres.spec[0].port[0].port}"
 # }
 
 output "postgres_url" {
-  value = "postgresql://${var.postgres_user}:${var.postgres_password}@localhost:${kubernetes_service.postgres.spec[0].port[0].port}/${var.postgres_db}"
+  value = "postgresql://${var.postgres_user}:${var.postgres_password}@localhost:${kubernetes_service_v1.postgres.spec[0].port[0].port}/${var.postgres_db}"
 }

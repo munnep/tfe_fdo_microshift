@@ -1,7 +1,7 @@
-resource "kubernetes_secret" "terraform-enterprise" {
+resource "kubernetes_secret_v1" "terraform-enterprise" {
   metadata {
     name      = "terraform-enterprise"
-    namespace = kubernetes_namespace.terraform_enterprise[var.namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.namespace].metadata.0.name
   }
   type = "kubernetes.io/dockerconfigjson"
   data = {
@@ -21,7 +21,7 @@ resource "helm_release" "tfe" {
   name            = "${var.tag_prefix}-tfe"
   repository      = "https://helm.releases.hashicorp.com"
   chart           = "terraform-enterprise"
-  namespace       = kubernetes_namespace.terraform_enterprise[var.namespace].metadata.0.name
+  namespace       = kubernetes_namespace_v1.terraform_enterprise[var.namespace].metadata.0.name
   version         = "1.6.5"
   cleanup_on_fail = true
   timeout         = var.helm_timeout
@@ -31,15 +31,15 @@ resource "helm_release" "tfe" {
       tag_prefix          = var.tag_prefix
       replica_count       = var.replica_count
       enc_password        = var.tfe_encryption_password
-      pg_dbname           = kubernetes_secret.postgres.data.POSTGRES_DB
-      pg_user             = kubernetes_secret.postgres.data.POSTGRES_USER
-      pg_password         = kubernetes_secret.postgres.data.POSTGRES_PASSWORD
-      pg_address          = "${kubernetes_service.postgres.metadata[0].name}.${var.dep_namespace}:${kubernetes_service.postgres.spec[0].port[0].port}"
+      pg_dbname           = kubernetes_secret_v1.postgres.data.POSTGRES_DB
+      pg_user             = kubernetes_secret_v1.postgres.data.POSTGRES_USER
+      pg_password         = kubernetes_secret_v1.postgres.data.POSTGRES_PASSWORD
+      pg_address          = "${kubernetes_service_v1.postgres.metadata[0].name}.${var.dep_namespace}:${kubernetes_service_v1.postgres.spec[0].port[0].port}"
       fqdn                = local.fqdn
       s3_bucket           = "${var.tag_prefix}-bucket"
-      s3_bucket_key       = kubernetes_secret.minio_root.data.appAccessKey
-      s3_bucket_secret    = kubernetes_secret.minio_root.data.appSecretKey
-      s3_endpoint         = "http://${kubernetes_service.minio.metadata[0].name}.${var.dep_namespace}:${kubernetes_service.minio.spec[0].port[0].port}"
+      s3_bucket_key       = kubernetes_secret_v1.minio_root.data.appAccessKey
+      s3_bucket_secret    = kubernetes_secret_v1.minio_root.data.appSecretKey
+      s3_endpoint         = "http://${kubernetes_service_v1.minio.metadata[0].name}.${var.dep_namespace}:${kubernetes_service_v1.minio.spec[0].port[0].port}"
       cert_data           = base64encode("${acme_certificate.certificate.certificate_pem}${acme_certificate.certificate.issuer_pem}")
       key_data            = base64encode(nonsensitive(acme_certificate.certificate.private_key_pem))
       ca_cert_data        = base64encode("${acme_certificate.certificate.certificate_pem}${acme_certificate.certificate.issuer_pem}")

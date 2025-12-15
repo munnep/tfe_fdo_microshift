@@ -1,8 +1,8 @@
 # Root + app credentials secret
-resource "kubernetes_secret" "minio_root" {
+resource "kubernetes_secret_v1" "minio_root" {
   metadata {
     name      = "${var.tag_prefix}-minio-root-credentials"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
   }
   data = {
     rootUser     = var.minio_user
@@ -13,10 +13,10 @@ resource "kubernetes_secret" "minio_root" {
   type = "Opaque"
 }
 
-resource "kubernetes_pod" "minio" {
+resource "kubernetes_pod_v1" "minio" {
   metadata {
     name      = "${var.tag_prefix}-minio"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
     labels = {
       app     = "minio"
       storage = "ephemeral"
@@ -57,7 +57,7 @@ resource "kubernetes_pod" "minio" {
         name = "MINIO_ROOT_USER"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.minio_root.metadata[0].name
+            name = kubernetes_secret_v1.minio_root.metadata[0].name
             key  = "rootUser"
           }
         }
@@ -66,7 +66,7 @@ resource "kubernetes_pod" "minio" {
         name = "MINIO_ROOT_PASSWORD"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.minio_root.metadata[0].name
+            name = kubernetes_secret_v1.minio_root.metadata[0].name
             key  = "rootPassword"
           }
         }
@@ -120,7 +120,7 @@ resource "kubernetes_pod" "minio" {
         name = "MINIO_ROOT_USER"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.minio_root.metadata[0].name
+            name = kubernetes_secret_v1.minio_root.metadata[0].name
             key  = "rootUser"
           }
         }
@@ -129,7 +129,7 @@ resource "kubernetes_pod" "minio" {
         name = "MINIO_ROOT_PASSWORD"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.minio_root.metadata[0].name
+            name = kubernetes_secret_v1.minio_root.metadata[0].name
             key  = "rootPassword"
           }
         }
@@ -138,7 +138,7 @@ resource "kubernetes_pod" "minio" {
         name = "APP_ACCESS_KEY"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.minio_root.metadata[0].name
+            name = kubernetes_secret_v1.minio_root.metadata[0].name
             key  = "appAccessKey"
           }
         }
@@ -147,7 +147,7 @@ resource "kubernetes_pod" "minio" {
         name = "APP_SECRET_KEY"
         value_from {
           secret_key_ref {
-            name = kubernetes_secret.minio_root.metadata[0].name
+            name = kubernetes_secret_v1.minio_root.metadata[0].name
             key  = "appSecretKey"
           }
         }
@@ -223,10 +223,10 @@ resource "kubernetes_pod" "minio" {
 }
 
 # Service
-resource "kubernetes_service" "minio" {
+resource "kubernetes_service_v1" "minio" {
   metadata {
     name      = "${var.tag_prefix}-minio"
-    namespace = kubernetes_namespace.terraform_enterprise[var.dep_namespace].metadata.0.name
+    namespace = kubernetes_namespace_v1.terraform_enterprise[var.dep_namespace].metadata.0.name
   }
   spec {
     selector = {
@@ -247,16 +247,9 @@ resource "kubernetes_service" "minio" {
   wait_for_load_balancer = false
 }
 
-# output "minio_service_name" {
-#   value = kubernetes_service.minio.metadata[0].name
-# }
-
-# output "minio_endpoint" {
-#   value = "${kubernetes_service.minio.metadata[0].name}.${var.namespace}.svc.cluster.local:${kubernetes_service.minio.spec[0].port[0].port}"
-# }
 
 output "minio_console_url" {
-  value = "http://localhost:${kubernetes_service.minio.spec[0].port[1].port}/"
+  value = "http://localhost:${kubernetes_service_v1.minio.spec[0].port[1].port}/"
 }
 
 output "minio_user" {
